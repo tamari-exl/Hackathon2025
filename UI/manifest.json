@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Send Page Content",
+  "name": "UT Wizz",
   "version": "1.0",
-  "description": "Send current page content to a service",
+  "description": "FSD scanner to create Unit tests",
   "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
