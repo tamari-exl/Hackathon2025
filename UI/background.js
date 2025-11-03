@@ -1,3 +1,30 @@
+// Disable extension by default
+chrome.action.disable();
+
+// Enable only for TestRail pages
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!tab.url) return;
+
+  if (tab.url.startsWith("https://wiki.clarivate.io/")) {
+    chrome.action.enable(tabId);
+  } else {
+    chrome.action.disable(tabId);
+  }
+});
+
+// Also handle tab switching
+chrome.tabs.onActivated.addListener(activeInfo => {
+  chrome.tabs.get(activeInfo.tabId, tab => {
+    if (!tab.url) return;
+
+    if (tab.url.startsWith("https://wiki.clarivate.io/")) {
+      chrome.action.enable(tab.id);
+    } else {
+      chrome.action.disable(tab.id);
+    }
+  });
+});
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "sendContent") {
     /*fetch("https://your-service-url.com/api/upload", {
