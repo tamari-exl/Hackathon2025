@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Send Page</title>
+  <title>Generate UTs</title>
   <style>
-    body { width: 180px; font-family: sans-serif; }
-    button { width: 100%; padding: 10px; }
+    body {
+      width: 180px; font-family: sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button { 
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      transition: 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #0056b3, #0096ff);
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
-  <button id="sendBtn">Send Page Content</button>
+  <button id="sendBtn">Generate UTs</button>
   <script src="popup.js"></script>
 </body>
 </html>

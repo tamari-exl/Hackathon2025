@@ -5,7 +5,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   // Execute a script in the page to get its content
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: () => document.documentElement.outerHTML
+    func: () => document.getElementById("content").innerText
   }, (results) => {
     const pageContent = results[0].result;
     // Send to background script
