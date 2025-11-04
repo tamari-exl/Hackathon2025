@@ -35,15 +35,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // .then(res => res.text())
     // .then(console.log)
     // .catch(console.error);
-    fetch("http://127.0.0.1:8000/", { method: "GET" })
+    fetch("http://127.0.0.1:8000/", { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({title: message.title, content: message.data})
+    })
       .then(res => res.text())
       .then(data => {
         console.log("✅ Fetch successful:", data);
-        chrome.runtime.sendMessage({ type: "success", text: "Data retrieved successfully!" });
+        chrome.runtime.sendMessage({ type: "success", text: "UTs created successfully!" });
       })
       .catch(error => {
         console.error("❌ Fetch failed:", error);
-        chrome.runtime.sendMessage({ type: "error", text: "Failed to fetch data from server." });
+        chrome.runtime.sendMessage({ type: "error", text: "Failed to create UTs." });
       });
     
     console.log("FROM BACKGROUND: ", message.data);

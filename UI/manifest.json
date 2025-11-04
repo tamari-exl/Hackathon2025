@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "UT Wizz",
+  "name": "UT Wiz",
   "version": "1.0",
   "description": "FSD scanner to create Unit tests",
   "permissions": ["activeTab", "scripting", "notifications", "http://127.0.0.1:8000/"],
