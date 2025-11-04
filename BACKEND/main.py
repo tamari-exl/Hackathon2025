@@ -99,7 +99,7 @@ def add_message(CONV_ID):
 
 
 def send_message():
-    hard_coded = [
+    testrail_template = [
         {
             "title": "Login with valid credentials",
             "priority_id": 3,
@@ -114,9 +114,10 @@ def send_message():
     CONV_BODY = {
   "prompt": "I am a developer that need to write Unit Tests based on an Functional Specification Document."
         "Please generate Unit Tests as JSON for TestRail based on the below Functional Specification Document."
+            "and bases on the information in this site: https://knowledge.exlibrisgroup.com/Alma"
         "I don't want any text in addition to the JSON array."
         "The format of the JSON is: {0}"
-        "The Functional Specification Document: ".format(hard_coded) + fsd_text,
+        "The Functional Specification Document: ".format(testrail_template) + fsd_text,
   "max_tokens": 10000,
   "temperature": 0.7,
   "num_results": 1,
@@ -151,49 +152,36 @@ def send_message():
     response = requests.post(AI_PLATFORM_URL + '/large-language-models/gpt_4o_mini/',
                              headers={'x-auth-token': AI_PLATFORM_API_KEY}, json=CONV_BODY)
 
-    # print(response.json())
     res = response.json()['results'][0]['completion'].replace("```json", "").replace("```", "")
     res = json.loads(res)
     print(res)
     return res
 
 
-def func(res):
+def push_tests_to_testrail(tests):
     # === TestRail configuration ===
-    TESTRAIL_BASE = "https://testrail.pre.proquest.com/testrail"
+    TESTRAIL_BASE = "https://testrail.pre.proquest.com/testrail/index.php?/api/v2"
     USER = "Joey.Gelpe@exlibrisgroup.com"
     API_KEY = "Newemployee123"
-    SECTION_ID = 319541  # Example section ID
+    PROJECT_ID = "27"
 
-    # === Example list of test cases ===
-    test_cases = [
-        {
-            "title": "Login with valid credentials",
-            "type_id": 1,
-            "priority_id": 2,
-            "custom_steps_separated": [
-                {"content": "Enter username", "expected": "Username accepted"},
-                {"content": "Enter password", "expected": "Login successful"}
-            ]
-        },
-        {
-            "title": "Login with invalid password",
-            "type_id": 1,
-            "priority_id": 3,
-            "custom_steps_separated": [
-                {"content": "Enter username", "expected": "Username accepted"},
-                {"content": "Enter wrong password", "expected": "Error message displayed"}
-            ]
+    response = requests.post(
+        f"{TESTRAIL_BASE}/add_section/{PROJECT_ID}",
+        auth=(USER, API_KEY),
+        headers={"Content-Type": "application/json"},
+        json={
+            "suite_id": 32713,
+            "name": "Hackaton Tests",
+            "description": "All login-related test cases"
         }
-    ]
-
-    # === API endpoint ===
-    API_URL = f"{TESTRAIL_BASE}/index.php?/api/v2/add_case/{SECTION_ID}"
+    )
+    print(response.json())
+    SECTION_ID = response.json().get("id")
 
     # === Loop through and add each case ===
-    for case in res:
+    for case in tests:
         response = requests.post(
-            API_URL,
+            f"{TESTRAIL_BASE}/add_case/{SECTION_ID}",
             auth=(USER, API_KEY),
             headers={"Content-Type": "application/json"},
             json=case
@@ -209,32 +197,22 @@ def func(res):
         time.sleep(0.3)
 
 
-@app.get("/")
+@app.post("/")
 def read_root():
-    res = send_message()
-    func(res)
+    tests = send_message()
+    push_tests_to_testrail(tests)
     return {"message": "Hello from your Python backend!"}
 
-@app.post("/sendFSD")
-async def sendFSD(request: Request):
-    data = await request.json()
-    text = data.get("text", "")
-    result = {"length": len(text), "uppercase": text.upper()}
-    return result
 
+if __name__ == "__main__":
+    create_result = create_agent()
+    print(create_result)
+    get_result = get_agent()
+    print(get_result)
+    conversation_id = create_conversation()
+    add_message(conversation_id)
 
-
-
-# if __name__ == "__main__":
-#     # create_result = create_agent()
-#     # print(create_result)
-#     # get_result = get_agent()
-#     # print(get_result)
-#     # conversation_id = create_conversation()
-#     # add_message(conversation_id)
-
-#     # delete_conversation(conversation_id)
-#     # delete_agent()
-
-#     res = send_message()
-#     func(res)
+    # delete_conversation(conversation_id)
+    # delete_agent()
+    # tests = send_message()
+    # push_tests_to_testrail(tests)
