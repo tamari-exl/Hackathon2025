@@ -2,14 +2,20 @@
 <html>
 <head>
   <title>Generate UTs</title>
+  <meta charset="UTF-8">
   <style>
     body {
       width: 180px; font-family: sans-serif;
+      font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", Arial, sans-serif;
+
+    }
+    .buttonWrapper {
+      padding-top: 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    button { 
+    button {
       background: linear-gradient(135deg, #007bff, #00c6ff);
       border: none;
       color: white;
@@ -24,10 +30,17 @@
       background: linear-gradient(135deg, #0056b3, #0096ff);
       transform: translateY(-1px);
     }
+    #message {
+      padding-top: 1rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <button id="sendBtn">Generate UTs</button>
+  <div class="buttonWrapper">
+    <button id="sendBtn">Generate UTs</button>
+  </div>
+  <div id="message"></div>
   <script src="popup.js"></script>
 </body>
 </html>
