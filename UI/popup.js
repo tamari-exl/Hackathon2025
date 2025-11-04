@@ -8,7 +8,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   // Execute a script in the page to get its content
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: () => ({data: document.getElementById("content").innerText, 
+    func: () => ({data: document.getElementById("content").textContent, 
       title: document.getElementById("title-text").innerText})
   }, (results) => {
     const pageContent = results[0].result.data;

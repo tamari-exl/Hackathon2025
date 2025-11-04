@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import time
+import os
 
 app = FastAPI()
 
@@ -98,6 +99,43 @@ def add_message(CONV_ID):
     print(json.dumps(response.json(), indent=2))
 
 
+    KA_BODY = {
+  "prompt": prompt,
+  "max_tokens": 10000,
+  "temperature": 0.7,
+  "num_results": 1,
+  "streaming": False,
+  "images": [],
+  "image_detail": "low",
+  "seed": 0,
+  "response_format": {},
+  "tools": [],
+  "tool_choice": {},
+  "top_p": -1,
+  "messages": [],
+  "timing_debug": False,
+  "usage": False,
+  "batch": False,
+  "batch_file_id": "string",
+  "batch_data": [
+    {
+      "prompt": "string",
+      "images": [
+        "string"
+      ],
+      "messages": [
+        {
+          "additionalProp1": {}
+        }
+      ]
+    }
+  ],
+  "reasoning": "medium"
+}
+    response = requests.post(AI_PLATFORM_URL + '/large-language-models/gpt_4o_mini/',
+                             headers={'x-auth-token': AI_PLATFORM_API_KEY}, json=KA_BODY)
+    return f"Knowledge Assistant summary for: {title}"
+
 def send_message(data):
     testrail_template = [
         {
@@ -109,15 +147,23 @@ def send_message(data):
             ]
         }
     ]
+    BASE_DIR = os.path.dirname(__file__)
+    file_path = os.path.join(BASE_DIR, "prompt.txt")
 
-    fsd_text = "Created by Hadas Granot, last updated on 22/Aug/23  3 minute read 1Introduction 1.1Story 1.2Requirements (Business, Technical, Security) 2Solution Description 2.1Browse Bibliographic Headings / Browse Authority Headings 2.2Browse Shelf Listing 2.3Nice to have 2.4Network Zone and Topology 2.5Usage Measurements 2.6Feature Flag 3Testing guidelines – Functional / Configuration / Performance / Automated 3.1Browse BIB headings 3.2Browse AUTH headings 3.3Browse shelf listing Introduction Story As a staff user I would like to have the latest browsing selections retained in order to save time by eliminating the need to manually scroll through the list each time. Requirements (Business, Technical, Security) remember the latest values selected by the user and present them when browsing through bibliographic headings, authority headings and shelf lists. Solution Description The values will be saved upon clicking on the Browse / Go buttons. Browse Bibliographic Headings / Browse Authority Headings Family - as today (according the active_registry). Not sticky. Heading type - remember the last selection per family Source code - remember the last selection per heading type Vocabulary - remember the last selection per heading type Browse Shelf Listing The values selected in the dropdowns - Call Number Level, Call Number Type, Library, Location - should be retained across sessions using the user preferences. When auto population is done - BIB - the call number type is populated. item - call number type, library, location are populated. In both cases, this functionality should be kept. i.e. not taken from the previous session. In addition, when coming from the auto population workflow, the following should be done - If no change was done to the dropdowns, the values will not be saved If a change was done to any of the dropdowns in the auto populate - all of them will be saved The CP call_number_type determines the default value that will be used for the first time for each user. Once a user selects a call number type, the CP will be ignored. Nice to have Browse bibliographic / authority headings - currently the tab goes from left to right, then to the next line. Should be changed to first go through the left column top to bottom, then to the right column top to bottom. Family → Heading type → Source code → Vocabulary → Search value Network Zone and Topology For browse bibliographic headings and browse authority headings in a member institution - remember all values as described above per IZ / NZ tab Usage Measurements NA. As the sticky values are dynamic, viewing the current values of all users provides information of minimal use. Feature Flag BROWSE_STICKY_VALUES Keep the selected values across sessions in browse bib headings, browse auth headings and browse shelf list. Nov 2023 Testing guidelines – Functional / Configuration / Performance / Automated Browse BIB headings In an institution that is working with multiple families and multiple vocabularies for names (priorities), the following selections should remain after logout / login - select family A, heading type = names, source code and vocabulary change source code change vocabulary select family B, heading type = subjects, source code and vocabulary change source code change vocabulary Browse AUTH headings In an institution that is working with multiple families and multiple vocabularies for names, the following selections should remain after logout / login select family A, heading type = names, source code and vocabulary change source code change vocabulary select family B, heading type = subjects, source code and vocabulary change source code change vocabulary Browse shelf listing Open browse shelf listing for the first time - the call number type should be the value defined in the CP call_number_type Select - Call Number Level, Call Number Type, Library, Location - he selections should remain after logout / login Auto populate from BIB, field 082 - the call number type should be Dewey. logout / login - the values should be the ones that were selected before the auto populate Auto populate from BIB, field 060 - the call number type should be National Library of Medicine. select a value from one of the other dropdowns logout / login - the values should be the ones that were selected during the auto populate Auto populate from item - the library / location should be populated from the item logout / login - the values should be the ones that were selected before the auto populate Auto populate from item - the library / location should be populated from the item select a value from one of the other dropdowns logout / login - the values should be the ones that were selected during the auto populate"
+    with open(file_path, "r", encoding="utf-8") as f:
+        prompt = f.read()
+    # prompt = "I am a developer that need to write Unit Tests based on an Functional Specification Document."
+    # "Please generate Unit Tests as JSON for TestRail based on the below Functional Specification Document."
+    # "and bases on the information in this site: https://knowledge.exlibrisgroup.com/Alma"
+    # "I don't want any text in addition to the JSON array."
+    # "The format of the JSON is: {0}"
+    # "The Functional Specification Document: ".format(testrail_template) + data['content']
+
+    prompt = prompt.replace("{0}", data['title'])
+    prompt = prompt.replace("{1}", str(testrail_template))
+    prompt = prompt.replace("{2}", data['content'])
     CONV_BODY = {
-  "prompt": "I am a developer that need to write Unit Tests based on an Functional Specification Document."
-        "Please generate Unit Tests as JSON for TestRail based on the below Functional Specification Document."
-            "and bases on the information in this site: https://knowledge.exlibrisgroup.com/Alma"
-        "I don't want any text in addition to the JSON array."
-        "The format of the JSON is: {0}"
-        "The Functional Specification Document: ".format(testrail_template) + data['content'],
+  "prompt": prompt,
   "max_tokens": 10000,
   "temperature": 0.7,
   "num_results": 1,
