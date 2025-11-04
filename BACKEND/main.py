@@ -204,15 +204,17 @@ def read_root():
     return {"message": "Hello from your Python backend!"}
 
 
-if __name__ == "__main__":
-    create_result = create_agent()
-    print(create_result)
-    get_result = get_agent()
-    print(get_result)
-    conversation_id = create_conversation()
-    add_message(conversation_id)
+# if __name__ == "__main__":
+#     create_result = create_agent()
+#     print(create_result)
+#     get_result = get_agent()
+#     print(get_result)
+#     conversation_id = create_conversation()
+#     add_message(conversation_id)
 
     # delete_conversation(conversation_id)
     # delete_agent()
+
+
     # tests = send_message()
     # push_tests_to_testrail(tests)
