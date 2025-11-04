@@ -211,6 +211,8 @@ def func(res):
 
 @app.get("/")
 def read_root():
+    res = send_message()
+    func(res)
     return {"message": "Hello from your Python backend!"}
 
 @app.post("/sendFSD")
@@ -223,16 +225,16 @@ async def sendFSD(request: Request):
 
 
 
-if __name__ == "__main__":
-    # create_result = create_agent()
-    # print(create_result)
-    # get_result = get_agent()
-    # print(get_result)
-    # conversation_id = create_conversation()
-    # add_message(conversation_id)
+# if __name__ == "__main__":
+#     # create_result = create_agent()
+#     # print(create_result)
+#     # get_result = get_agent()
+#     # print(get_result)
+#     # conversation_id = create_conversation()
+#     # add_message(conversation_id)
 
-    # delete_conversation(conversation_id)
-    # delete_agent()
+#     # delete_conversation(conversation_id)
+#     # delete_agent()
 
-    res = send_message()
-    func(res)
+#     res = send_message()
+#     func(res)

@@ -27,14 +27,21 @@ chrome.tabs.onActivated.addListener(activeInfo => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "sendContent") {
-    /*fetch("https://your-service-url.com/api/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: message.data })
+    // fetch("https://your-service-url.com/api/upload", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ content: message.data })
+    // })
+    // .then(res => res.text())
+    // .then(console.log)
+    // .catch(console.error);
+    fetch("http://127.0.0.1:8000/", {
+      method: "GET"
     })
     .then(res => res.text())
     .then(console.log)
-    .catch(console.error);*/
+    .catch(console.error);
+    
     console.log("FROM BACKGROUND: ", message.data);
   }
 });
