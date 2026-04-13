@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // .then(res => res.text())
     // .then(console.log)
     // .catch(console.error);
-    fetch("http://127.0.0.1:8000/", { 
+    fetch("http://127.0.0.1:1234/", { 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({title: message.title, content: message.data})

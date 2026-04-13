@@ -6,6 +6,9 @@ import requests
 import time
 import os
 
+#To run this project you need to be in BACKEND folder and run:
+# & "C:/Program Files/Python39/python.exe" -m uvicorn main:app --reload --port 1234
+
 app = FastAPI()
 
 # Allow requests from your Chrome extension
