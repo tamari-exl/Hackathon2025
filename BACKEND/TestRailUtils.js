@@ -8,7 +8,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/${GET_SUITES}/${TESTRAIL_PROJECT_ID}`, {
         method: "GET",
         headers: {
-            "Authorization": "Basic " + btoa("keren.jacobson@clarivate.com:Port0585"),
+            "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
             "Content-Type": "application/json"
         }
         });
@@ -18,7 +18,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/add_section/${TESTRAIL_PROJECT_ID}`, {
             method: "POST",
             headers: {
-                "Authorization": "Basic " + btoa("keren.jacobson@clarivate.com:Port0585"),
+                "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -33,7 +33,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/add_section/${TESTRAIL_PROJECT_ID}`, {
         method: "POST",
         headers: {
-            "Authorization": "Basic " + btoa("keren.jacobson@clarivate.com:Port0585"),
+            "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
