@@ -13,11 +13,13 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   }, (results) => {
     const pageContent = results[0].result.data;
     const title = results[0].result.title;
+    const selectedSuite = document.getElementById("dropdown");
     // Send to background script
     chrome.runtime.sendMessage({
       action: "sendContent",
       data: pageContent,
-      title: title 
+      title: title,
+      suiteId: selectedSuite.value
     });
   });
 });
@@ -35,3 +37,24 @@ chrome.runtime.onMessage.addListener((msg) => {
     messageBox.style.color = "red";
   }
 });
+
+const dropdown = document.getElementById("dropdown");
+
+chrome.runtime.sendMessage(
+  { type: "GET_TESTRAIL_CASES" },
+  (response) => {
+    if (!response || !response.success) {
+      dropdown.innerHTML = "<option>Error loading</option>";
+      return;
+    }
+
+    dropdown.innerHTML = "";
+
+    response.data.forEach(testCase => {
+      const option = document.createElement("option");
+      option.value = testCase.id;
+      option.textContent = `${testCase.name}`;
+      dropdown.appendChild(option);
+    });
+  }
+);
