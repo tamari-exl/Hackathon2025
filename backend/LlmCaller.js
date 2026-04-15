@@ -17,7 +17,6 @@ const LLM_CONFIG = Object.freeze({
 
 /**
  * Minimal TestRail case shape used as the format example in the prompt.
- * Mirrors the testrail_template list from main.py.
  */
 const TESTRAIL_CASE_TEMPLATE = Object.freeze([
   {
