@@ -1,6 +1,6 @@
 
 body {
-    width: 250px; font-family: sans-serif;
+    width: 360px; height: 360px; font-family: sans-serif;
     font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", Arial, sans-serif;
 
 }
@@ -10,7 +10,7 @@ body {
     align-items: center;
     justify-content: center;
 }
-button {
+.general-button {
     background: linear-gradient(135deg, #007bff, #00c6ff);
     border: none;
     color: white;
@@ -21,11 +21,23 @@ button {
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     transition: 0.2s;
 }
-button:hover {
+.general-button:hover {
     background: linear-gradient(135deg, #0056b3, #0096ff);
     transform: translateY(-1px);
 }
 #message {
     padding-top: 1rem;
     text-align: center;
+}
+
+.modal-dialog {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+ /* for the close button in the modal header */
+.modal-header {
+    button:hover {
+        transform: translateY(-1px);
+    }
 }
