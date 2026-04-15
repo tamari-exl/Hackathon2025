@@ -8,7 +8,7 @@ const llmService = new LlmService();
  * @param {{ title: string, content: string }} data
  * @returns {Promise<object[]>} - array of TestRail-formatted test cases
  */
-export async function generateAndPushTestCases(data) {
+export async function generateTestCases(data) {
   console.log(`[UTWizService] ▶ Generating test cases for: "${data?.title}"`);
   const testCases = await llmService.sendMessage(data);
   console.log(`[UTWizService] LLM returned ${testCases.length} test case(s)`);
