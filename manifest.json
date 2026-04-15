@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "FSD scanner to create Unit tests",
   "permissions": ["tabs", "activeTab", "scripting", "notifications", "http://127.0.0.1:1234/"],
-  "host_permissions": ["http://127.0.0.1:1234/"],
+  "host_permissions": ["https://testrail.pre.proquest.com/"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -14,6 +14,7 @@
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   }
 }
