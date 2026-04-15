@@ -3,7 +3,7 @@
   "name": "UT Wiz",
   "version": "1.0",
   "description": "FSD scanner to create Unit tests",
-  "permissions": ["tabs", "activeTab", "scripting", "notifications", "permissions"],
+  "permissions": ["tabs", "activeTab", "scripting", "notifications"],
   "host_permissions": ["https://testrail.pre.proquest.com/*", "https://clarivate.atlassian.net/*"],
   "action": {
     "default_popup": "popup.html",
