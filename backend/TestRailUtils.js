@@ -80,13 +80,15 @@ export class TestRailUtils {
     }
 
     async postTestRailCases(sectionId, data) {
-        return fetch(`${TESTRAIL_URL}/add_case/${sectionId}`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-        });
+        for(const testCase of data) {
+            await fetch(`${TESTRAIL_URL}/add_case/${sectionId}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(testCase)
+            });
+        }
     }
 }
