@@ -3,14 +3,14 @@
   "name": "UT Wiz",
   "version": "1.0",
   "description": "FSD scanner to create Unit tests",
-  "permissions": ["activeTab", "scripting", "notifications", "http://127.0.0.1:1234/"],
+  "permissions": ["tabs", "activeTab", "scripting", "notifications", "http://127.0.0.1:1234/"],
   "host_permissions": ["http://127.0.0.1:1234/"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
     }
   },
   "background": {
