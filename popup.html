@@ -6,17 +6,14 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h3>Choose a suite you want to generate UTs for:
-  </h3>
-  <div class="buttonWrapper">
-    <select id="dropdown">
-      <option>Loading...</option>
-    </select>
-  </div>
-  <div class="buttonWrapper">
-    <button id="sendBtn">Generate UTs</button>
-  </div>
+  <div class="ut-card">
+  <h5 class="ut-title">Choose a suite you want to generate UTs for:</h5>
+  <select id="dropdown" class="form-select ut-select">
+    <option>Loading...</option>
+  </select>
+  <button id="sendBtn" class="btn ut-btn">Generate UTs</button>
   <div id="message"></div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
