@@ -4,14 +4,20 @@
   "version": "1.0",
   "description": "FSD scanner to create Unit tests",
   "permissions": ["tabs", "activeTab", "scripting", "notifications", "storage"],
-  "host_permissions": ["https://testrail.pre.proquest.com/"],
+  "host_permissions": ["https://testrail.pre.proquest.com/*", "https://clarivate.atlassian.net/*"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/icon.png",
-      "48": "images/icon.png",
-      "128": "images/icon.png"
+      "16": "images/disabled_icon16.png",
+      "32": "images/disabled_icon32.png",
+      "48": "images/disabled_icon48.png",
+      "128": "images/disabled_icon128.png"
     }
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "background": {
     "service_worker": "background.js",

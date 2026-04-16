@@ -13,7 +13,7 @@
   <script type="module" src="popup.js"></script>
 
   <!-- Gear icon -->
-  <button id="btnSettings" class="btn btn-light border rounded-circle general-button"
+  <button id="btnSettings" class="btn btn-light border rounded-circle ut-btn"
     style="position: fixed; top: 10px; right: 10px; z-index: 9999;">
     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 50 50">
       <path
@@ -21,18 +21,15 @@
       </path>
     </svg>
   </button>
-
-  <h3>Choose a suite you want to generate UTs for:
-  </h3>
-  <div class="buttonWrapper">
-    <select id="dropdown">
-      <option>Loading...</option>
-    </select>
-  </div>
-  <div class="buttonWrapper">
-    <button id="sendBtn" class="general-button">Generate UTs</button>
-  </div>
+  
+  <div class="ut-card">
+  <h5 class="ut-title">Choose a suite you want to generate UTs for:</h5>
+  <select id="dropdown" class="form-select ut-select">
+    <option>Loading...</option>
+  </select>
+  <button id="sendBtn" class="btn ut-btn">Generate UTs</button>
   <div id="message"></div>
+  </div>
 
   <!-- Settings Modal -->
   <div class="modal fade" id="settingsModal" tabindex="-1">
@@ -64,7 +61,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="btnSaveSettings" class="btn btn-primary general-button">Save</button>
+          <button id="btnSaveSettings" class="btn btn-primary ut-btn">Save</button>
         </div>
       </div>
     </div>

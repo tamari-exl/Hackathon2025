@@ -1,144 +1,100 @@
 import { TestRailUtils } from "./backend/TestRailUtils.js";
-// // Disable extension by default
-// chrome.action.disable();
+import { LlmService } from './backend/LlmCaller.js';
 
-// Enable only for Confluence pages
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  console.log("onUpdated", tab);
-  if (changeInfo.status === "complete") {
-    if (!tab.url) {
-      console.log(tabId + ' no url - rejected for plugin')
-      chrome.action.disable(tabId);
-      return;
-    }
 
-    if (tab.url.match("https://clarivate.atlassian.net/wiki/")) {
-      console.log(tabId + ' confirmed for plugin')
-      chrome.action.enable(tabId);
-    } else {
-      console.log(tabId + ' rejected for plugin')
-      chrome.action.disable(tabId);
-    }
+const ALLOWED_DOMAIN = "https://clarivate.atlassian.net/";
+const AI_PLATFORM_URL = 'https://agai-platform-api.dev.int.proquest.com/large-language-models/gpt_41_mini_2025_04_14'; //to be replaced by param
+const AI_PLATFORM_API_KEY = 'DemoToken'; //to be replaced by param
+const PATH = "Yuval Peleg/Keren Jacobson/UT Wiz/"; //to be replaced by param
+
+function updateIcon(tabId, url) {
+  if (!url) return;
+
+  const isAllowed = url.includes(ALLOWED_DOMAIN);
+
+  chrome.action.setIcon({
+    tabId,
+    path: isAllowed
+      ? {
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "48": "images/icon48.png",
+        "128": "images/icon128.png"
+      }
+      : {
+        "16": "images/disabled_icon16.png",
+        "32": "images/disabled_icon32.png",
+        "48": "images/disabled_icon48.png",
+        "128": "images/disabled_icon128.png"
+      }
+  });
+
+  chrome.action.setTitle({
+    tabId,
+    title: isAllowed
+      ? "Extension active"
+      : "Disabled on this site"
+  });
+  if (isAllowed) {
+    chrome.action.enable(tabId);
+  } else {
+    chrome.action.disable(tabId);
   }
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!tab.url) return;
+  updateIcon(tabId, tab.url);
 });
 
-// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-//     if(changeInfo.status === "complete"){
-//         if (isAllowedUrl(tab.url)) {
-//             if(tab.url.match(solrUri)){
-//                 chrome.scripting.executeScript({
-//                     target: {tabId: tabId},
-//                     files: ['content_scripts/solr/build_solr_dashboard.js']
-//                 });
-//             }
-//             console.log(tabId + ' confirmed for plugin')
-//             chrome.action.enable(tabId);
-//             chrome.action.setIcon({
-//                 path : "images/conf_38.jpg"
-//             });
-//         } else {
-//             console.log(tabId + ' rejected for plugin')
-//             chrome.action.disable(tabId);
-//         }
-//     }
-// });
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  const tab = await chrome.tabs.get(activeInfo.tabId);
+  if (!tab.url) return;
+  updateIcon(activeInfo.tabId, tab.url);
+});
 
-// Also handle tab switching
-// chrome.tabs.onActivated.addListener(activeInfo => {
-//   console.log("onActivated");
-//   chrome.tabs.get(activeInfo.tabId, tab => {
-//     console.log("tab: ", tab);
-//     if (!tab.url) {
-//       console.log("!tabs[0].url");
-//       // chrome.action.setIcon({
-//       //   path: "images/disabled_icon.png"
-//       // });
-//       return;
-//     }
-
-//     if (tab.url.startsWith("https://clarivate.atlassian.net/wiki/")) {
-//       chrome.action.enable(tab.id);
-//     } else {
-//       chrome.action.disable(tab.id);
-//       chrome.action.setIcon({
-//         path: "images/disabled_icon.png"
-//       });
-//     }
-//   });
-// });
-
-chrome.tabs.onActivated.addListener(async function setExtensionIcon(activeInfo) {
-  console.log("onActivated", activeInfo);
+async function createUTs(message) {
   try {
-    chrome.tabs.query({ active: true }).then((tabs) => {
-      console.log("tab: ", tabs[0]);
-      if (!tabs[0].url) {
-        console.log("!tabs[0].url");
-        chrome.action.setIcon({
-          path: "images/disabled_icon.png"
-        });
-        return;
-      }
+    const testRailUtils = new TestRailUtils();
+    const data = await testRailUtils.getOrCreateAllTreeSection(
+      message.suiteId,
+      PATH,
+      message.title
+    );
 
-      if (tabs[0].url.match("https://clarivate.atlassian.net/wiki/")) {
-        console.log("icon");
-        chrome.action.setIcon({
-          path: "images/icon.png"
-        });
+    const sectionId = data.id;
+    const llmService = new LlmService();
+    const testCases = await llmService.sendMessage({
+      title: message.title,
+      content: message.data,
+      apiUrl: AI_PLATFORM_URL,
+      apiKey: AI_PLATFORM_API_KEY
+    });
 
-      } else {
-        console.log("disabled_icon", chrome);
-        chrome.action.setIcon({
-          path: "images/disabled_icon.png"
-        })
-      }
-    })
+    await testRailUtils.postTestRailCases(sectionId, testCases);
+
+    chrome.runtime.sendMessage({
+      type: "success",
+      text: "UTs created successfully!"
+    });
+
   } catch (error) {
     console.error(error);
-    if (error == 'Error: Tabs cannot be edited right now (user may be dragging a tab).') {
-      setTimeout(() => setExtensionIcon(activeInfo), 50);
-    }
+
+    chrome.runtime.sendMessage({
+      type: "error",
+      text: "Failed to create UTs."
+    });
   }
-});
-
-// chrome.tabs.onActivated.addListener(async function setExtensionIcon(activeInfo) {
-//     try {
-//         chrome.tabs.query({active : true}).then((tabs) => {
-//             if(isAllowedUrl(tabs[0].url)){
-//                 chrome.action.setIcon({
-//                     path : "images/conf_38.jpg"
-//                 });
-//             } else {
-//                 chrome.action.setIcon({
-//                     path : "images/conf_disabled_38.png"
-//                 });
-//             }
-//         })
-//     } catch (error) {
-//         console.error(error);
-//         if (error == 'Error: Tabs cannot be edited right now (user may be dragging a tab).') {
-//             setTimeout(() => setExtensionIcon(activeInfo), 50);
-//         }
-//     }
-// });
-
-// const solrUri = '/solr';
-// const allowedUrlsPatterns = ['/primo_library', '/primo-explore', '/mng', '/ng', '/ful', '/infra/', '/rep', '/acq', '/prima', '/discovery', '/nde', solrUri];
-
-// function isAllowedUrl(url){
-//     return url.match('(' + allowedUrlsPatterns.join('|') + ')')
-// }
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "sendContent") {
-    const testRailUtils = new TestRailUtils();
-    testRailUtils.getOrCreateAllTreeSection(message.suiteId, "Yuval Peleg/Keren Jacobson/UT Wiz/", message.title)
-      .then(data => {
-        chrome.runtime.sendMessage({ type: "success", text: "UTs created successfully!" });
-      })
-      .catch(error => {
-        chrome.runtime.sendMessage({ type: "error", text: "Failed to create UTs." });
-      });
+    createUTs(message).then(() => {              
+      chrome.runtime.sendMessage({ type: "success", text: "UTs created successfully!" });
+    }).catch(() => {
+      chrome.runtime.sendMessage({ type: "error", text: "Failed to create UTs." });
+    });
   }
 });
 
