@@ -1,5 +1,6 @@
 .ut-card {
   width: 360px;
+  height: 360px;
   padding: 20px;
   border-radius: 16px;
   background: #ffffff;
@@ -36,4 +37,16 @@
 .ut-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(0,114,255,0.3);
+}
+
+.modal-dialog {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+ /* for the close button in the modal header */
+.modal-header {
+    button:hover {
+        transform: translateY(-1px);
+    }
 }
