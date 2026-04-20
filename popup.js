@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('testrailPassword').value = creds.testrailPassword;
     document.getElementById('llmToken').value = creds.llmToken;
     document.getElementById('llmApiUrl').value = creds.llmApiUrl;
+    document.getElementById('testrailPath').value = creds.testrailPath;
     settingsModal.show();
   });
 
@@ -83,7 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
       testrailUserName: document.getElementById('testrailUserName').value,
       testrailPassword: document.getElementById('testrailPassword').value,
       llmToken: document.getElementById('llmToken').value,
-      llmApiUrl: document.getElementById('llmApiUrl').value
+      llmApiUrl: document.getElementById('llmApiUrl').value,
+      testrailPath: document.getElementById('testrailPath').value
     };
     console.log('🔑 Saving credentials:', Object.keys(creds), Object.values(creds));
     await saveCredentials(creds);
