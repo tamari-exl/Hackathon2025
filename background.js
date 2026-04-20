@@ -1,11 +1,7 @@
 import { TestRailUtils } from "./backend/TestRailUtils.js";
 import { LlmService } from './backend/LlmCaller.js';
 
-
 const ALLOWED_DOMAIN = "https://clarivate.atlassian.net/";
-const AI_PLATFORM_URL = 'https://agai-platform-api.dev.int.proquest.com/large-language-models/gpt_41_mini_2025_04_14'; //to be replaced by param
-const AI_PLATFORM_API_KEY = 'DemoToken'; //to be replaced by param
-const PATH = "Yuval Peleg/Keren Jacobson/UT Wiz/"; //to be replaced by param
 
 function updateIcon(tabId, url) {
   if (!url) return;
@@ -58,7 +54,6 @@ async function createUTs(message) {
     const testRailUtils = new TestRailUtils();
     const data = await testRailUtils.getOrCreateAllTreeSection(
       message.suiteId,
-      PATH,
       message.title
     );
 
@@ -66,9 +61,7 @@ async function createUTs(message) {
     const llmService = new LlmService();
     const testCases = await llmService.sendMessage({
       title: message.title,
-      content: message.data,
-      apiUrl: AI_PLATFORM_URL,
-      apiKey: AI_PLATFORM_API_KEY
+      content: message.data
     });
 
     await testRailUtils.postTestRailCases(sectionId, testCases);
