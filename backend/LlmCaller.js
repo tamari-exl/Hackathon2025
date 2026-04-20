@@ -29,6 +29,9 @@ const TESTRAIL_CASE_TEMPLATE = Object.freeze([
   },
 ]);
 
+const fs = require('fs');
+const path = require('path');
+
 // ============================================================
 
 export class LlmService {
@@ -42,43 +45,8 @@ export class LlmService {
    * Placeholders: {0} = title, {1} = format, {2} = spec content.
    */
   getPromptTemplate() {
-    return `You are an expert Alma developer and QA engineer. 
-Your task is to extract testing scenarios from the Functional Specification Document text
-and output them as TestRail test cases.
-
-RULES:
-1. ✅ OUTPUT MUST BE **ONLY** a JSON array. 
-2. ❌ DO NOT include explanation, headers, commentary, quotes, markdown, or prose.
-3. ✅ Each object must follow the following structure but each object can have more than one custom_steps_separated:
-
-[
-  {
-    "title": "<short test case name>",
-    "priority_id": 3,
-    "custom_steps_separated": [
-      { "content": "<step description>", "expected": "<expected result>" }
-    ]
-  }
-]
-
-4. Use the format definition provided below.
-5. If any data is unknown, infer reasonable values based on context.
-6. If no scenarios are available, return \`[]\`.
-
-TESTRAIL FORMAT:
-{1}
-
-INPUT SPECIFICATION:
-Title: {0}
-
-The following is the full Functional Specification Document. 
-Use ONLY this content to extract and derive unit-level functional tests:
-
-<<< BEGIN SPEC >>>
-{2}
-<<< END SPEC >>>
-
-Now output ONLY the JSON array.`;
+    const filePath = path.join(__dirname, 'prompt.txt');
+    return fs.readFileSync(filePath, 'utf-8');
   }
 
   /**
