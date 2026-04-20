@@ -36,49 +36,23 @@ export class LlmService {
     console.log('[LlmService] Initialized');
   }
 
-  // ── Prompt building ────────────────────────────────────────
+// ── Prompt building ────────────────────────────────────────
 
   /**
    * Placeholders: {0} = title, {1} = format, {2} = spec content.
    */
-  getPromptTemplate() {
-    return `You are an expert Alma developer and QA engineer. 
-Your task is to extract testing scenarios from the Functional Specification Document text
-and output them as TestRail test cases.
+  async getPromptTemplate() {
+    if (this._promptTemplate) return this._promptTemplate;
 
-RULES:
-1. ✅ OUTPUT MUST BE **ONLY** a JSON array. 
-2. ❌ DO NOT include explanation, headers, commentary, quotes, markdown, or prose.
-3. ✅ Each object must follow the following structure but each object can have more than one custom_steps_separated:
+    const url = chrome.runtime.getURL('BACKEND/prompt.txt');
+    const res = await fetch(url);
 
-[
-  {
-    "title": "<short test case name>",
-    "priority_id": 3,
-    "custom_steps_separated": [
-      { "content": "<step description>", "expected": "<expected result>" }
-    ]
-  }
-]
+    if (!res.ok) {
+        throw new Error('Failed to load prompt.txt');
+    }
 
-4. Use the format definition provided below.
-5. If any data is unknown, infer reasonable values based on context.
-6. If no scenarios are available, return \`[]\`.
-
-TESTRAIL FORMAT:
-{1}
-
-INPUT SPECIFICATION:
-Title: {0}
-
-The following is the full Functional Specification Document. 
-Use ONLY this content to extract and derive unit-level functional tests:
-
-<<< BEGIN SPEC >>>
-{2}
-<<< END SPEC >>>
-
-Now output ONLY the JSON array.`;
+    this._promptTemplate = await res.text();
+    return this._promptTemplate;
   }
 
   /**
@@ -87,11 +61,12 @@ Now output ONLY the JSON array.`;
    * @param {string} content  - full spec text
    * @returns {string}        - fully-formed prompt string
    */
-  buildPrompt(title, content) {
-    return this.getPromptTemplate()
-      .replace('{0}', title)
-      .replace('{1}', JSON.stringify(TESTRAIL_CASE_TEMPLATE, null, 2))
-      .replace('{2}', content);
+  async buildPrompt(title, content) {
+    const template = await this.getPromptTemplate();
+    return template
+        .replace('{0}', title)
+        .replace('{1}', JSON.stringify(TESTRAIL_CASE_TEMPLATE, null, 2))
+        .replace('{2}', content);
   }
 
   // ── Response cleanup ───────────────────────────────────────
@@ -191,7 +166,7 @@ Now output ONLY the JSON array.`;
     console.log(`[LlmService] sendMessage called — title: "${data?.title}"`);
     this.validateInput(data);
 
-    const prompt = this.buildPrompt(data.title, data.content);
+    const prompt = await this.buildPrompt(data.title, data.content);
     console.log('[LlmService] Prompt built successfully');
 
     const requestBody = this.buildRequestBody(prompt);
