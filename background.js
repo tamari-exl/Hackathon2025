@@ -50,35 +50,25 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 });
 
 async function createUTs(message) {
-  try {
-    const testRailUtils = new TestRailUtils();
-    const data = await testRailUtils.getOrCreateAllTreeSection(
-      message.suiteId,
-      message.title
-    );
+  const testRailUtils = new TestRailUtils();
+  const data = await testRailUtils.getOrCreateAllTreeSection(
+    message.suiteId,
+    message.title
+  );
 
-    const sectionId = data.id;
-    const llmService = new LlmService();
-    const testCases = await llmService.sendMessage({
-      title: message.title,
-      content: message.data
-    });
+  const sectionId = data.id;
+  const llmService = new LlmService();
+  const testCases = await llmService.sendMessage({
+    title: message.title,
+    content: message.data
+  });
 
-    await testRailUtils.postTestRailCases(sectionId, testCases);
+  await testRailUtils.postTestRailCases(sectionId, testCases);
 
-    chrome.runtime.sendMessage({
-      type: "success",
-      text: "UTs created successfully!"
-    });
-
-  } catch (error) {
-    console.error(error);
-
-    chrome.runtime.sendMessage({
-      type: "error",
-      text: "Failed to create UTs."
-    });
-  }
+  chrome.runtime.sendMessage({
+    type: "success",
+    text: "UTs created successfully!"
+  });
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
