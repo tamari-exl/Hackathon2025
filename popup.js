@@ -43,25 +43,28 @@ chrome.runtime.onMessage.addListener((msg) => {
 });
 
 const dropdown = document.getElementById("dropdown");
+loadTestRailDropdown();
 
-chrome.runtime.sendMessage(
-  { type: "GET_TESTRAIL_CASES" },
-  (response) => {
-    if (!response || !response.success) {
-      dropdown.innerHTML = "<option>Error loading</option>";
-      return;
+function loadTestRailDropdown() {
+  chrome.runtime.sendMessage(
+    { type: "GET_TESTRAIL_CASES" },
+    (response) => {
+      if (!response || !response.success) {
+        dropdown.innerHTML = "<option>Error loading</option>";
+        return;
+      }
+
+      dropdown.innerHTML = "";
+
+      response.data.forEach(testCase => {
+        const option = document.createElement("option");
+        option.value = testCase.id;
+        option.textContent = `${testCase.name}`;
+        dropdown.appendChild(option);
+      });
     }
-
-    dropdown.innerHTML = "";
-
-    response.data.forEach(testCase => {
-      const option = document.createElement("option");
-      option.value = testCase.id;
-      option.textContent = `${testCase.name}`;
-      dropdown.appendChild(option);
-    });
-  }
-);
+  );
+}
 
 // ======================================= Settings ========================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     messageBox.textContent = `✅ Settings saved successfully`;
     messageBox.className = "success";
     messageBox.style.color = "green";
+    loadTestRailDropdown();
     console.log('✅ Settings saved successfully');
   });
 });

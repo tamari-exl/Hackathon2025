@@ -1,3 +1,4 @@
+import { loadCredentials } from "./CredentialsUtils.js";
 const TESTRAIL_URL = 'https://testrail.pre.proquest.com/testrail/index.php?/api/v2';
 const GET_SUITES = 'get_suites';
 const TESTRAIL_PROJECT_ID = '27';
@@ -15,6 +16,11 @@ const getSprintToSearch = () => {
   return [format(new Date(year, month + 3)), format(new Date(year, month + 2)), format(new Date(year, month + 1))];
 }
 
+const testRailCredentials = async () => {
+    const {testrailUserName, testrailPassword} = await loadCredentials();
+    return testrailUserName + ":" + testrailPassword;
+}
+
 export class TestRailUtils {
     
     async fetchTestRailCases() {
@@ -22,7 +28,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/${GET_SUITES}/${TESTRAIL_PROJECT_ID}`, {
         method: "GET",
         headers: {
-            "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
+            "Authorization": "Basic " + btoa(await testRailCredentials()),
             "Content-Type": "application/json"
         }
         })
@@ -35,14 +41,15 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/get_sections/${TESTRAIL_PROJECT_ID}&suite_id=${suiteId}`, {
             method: "GET",
             headers: { 
-                "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
+                "Authorization": "Basic " + btoa(await testRailCredentials()),
                 "Content-Type": "application/json"
             }
         });
     }
 
-    async getOrCreateAllTreeSection(suiteId, pathString, title) {
-        const sectionsData = pathString.split("/").map(s => s.trim()).filter(Boolean);
+    async getOrCreateAllTreeSection(suiteId, title) {
+        const {testrailPath} = await loadCredentials();
+        const sectionsData = testrailPath.split("/").map(s => s.trim()).filter(Boolean);
         const sections = await this.fetchTestRailSections(suiteId).then(res => res.json()); 
         let parentId = null;
         let foundDepth = -1;
@@ -67,7 +74,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/add_section/${TESTRAIL_PROJECT_ID}`, {
             method: "POST",
             headers: {
-                "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
+                "Authorization": "Basic " + btoa(await testRailCredentials()),
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -84,7 +91,7 @@ export class TestRailUtils {
             await fetch(`${TESTRAIL_URL}/add_case/${sectionId}`, {
                 method: "POST",
                 headers: {
-                    "Authorization": "Basic " + btoa("Joey.Gelpe@exlibrisgroup.com:Newemployee123"),
+                    "Authorization": "Basic " + btoa(await testRailCredentials()),
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(testCase)

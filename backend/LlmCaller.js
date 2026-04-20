@@ -5,6 +5,8 @@
 /**
  * Static configuration for the LLM API.
  */
+import { loadCredentials } from "./CredentialsUtils.js";
+
 const LLM_CONFIG = Object.freeze({
   maxTokens:   10000,
   temperature: 0.7,
@@ -196,15 +198,16 @@ Now output ONLY the JSON array.`;
 
     const requestBody = this.buildRequestBody(prompt);
 
+    const { apiUrl, apiKey } = await loadCredentials();
     // ── Network call ─────────────────────────────────────────
     let response;
     try {
-      response = await fetch(data.apiUrl, {
+      response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept':        'application/json',
-          'x-auth-token':  data.apiKey,
+          'x-auth-token':  apiKey,
         },
         body: JSON.stringify(requestBody),
       });
