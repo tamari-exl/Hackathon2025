@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('btnSettings').addEventListener('click', async () => {
     console.log('⚙️ Settings button clicked');
     const creds = await loadCredentials();
-    console.log('🔑 Loaded credentials:', Object.keys(creds), Object.values(creds));
+    console.log('🔑 Loaded credentials successfully');
     document.getElementById('testrailUserName').value = creds.testrailUserName;
     document.getElementById('testrailPassword').value = creds.testrailPassword;
     document.getElementById('llmToken').value = creds.llmToken;

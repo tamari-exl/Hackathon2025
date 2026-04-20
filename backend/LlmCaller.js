@@ -198,16 +198,16 @@ Now output ONLY the JSON array.`;
 
     const requestBody = this.buildRequestBody(prompt);
 
-    const { apiUrl, apiKey } = await loadCredentials();
+    const { llmApiUrl, llmToken } = await loadCredentials();
     // ── Network call ─────────────────────────────────────────
     let response;
     try {
-      response = await fetch(apiUrl, {
+      response = await fetch(llmApiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept':        'application/json',
-          'x-auth-token':  apiKey,
+          'x-auth-token':  llmToken,
         },
         body: JSON.stringify(requestBody),
       });

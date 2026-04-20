@@ -16,7 +16,7 @@ const getSprintToSearch = () => {
   return [format(new Date(year, month + 3)), format(new Date(year, month + 2)), format(new Date(year, month + 1))];
 }
 
-const testRailCredentials = async () => {
+const getTestRailCredentials = async () => {
     const {testrailUserName, testrailPassword} = await loadCredentials();
     return testrailUserName + ":" + testrailPassword;
 }
@@ -28,7 +28,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/${GET_SUITES}/${TESTRAIL_PROJECT_ID}`, {
         method: "GET",
         headers: {
-            "Authorization": "Basic " + btoa(await testRailCredentials()),
+            "Authorization": "Basic " + btoa(await getTestRailCredentials()),
             "Content-Type": "application/json"
         }
         })
@@ -41,7 +41,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/get_sections/${TESTRAIL_PROJECT_ID}&suite_id=${suiteId}`, {
             method: "GET",
             headers: { 
-                "Authorization": "Basic " + btoa(await testRailCredentials()),
+                "Authorization": "Basic " + btoa(await getTestRailCredentials()),
                 "Content-Type": "application/json"
             }
         });
@@ -74,7 +74,7 @@ export class TestRailUtils {
         return fetch(`${TESTRAIL_URL}/add_section/${TESTRAIL_PROJECT_ID}`, {
             method: "POST",
             headers: {
-                "Authorization": "Basic " + btoa(await testRailCredentials()),
+                "Authorization": "Basic " + btoa(await getTestRailCredentials()),
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -87,11 +87,12 @@ export class TestRailUtils {
     }
 
     async postTestRailCases(sectionId, data) {
+        const testRailCredentials = await getTestRailCredentials();
         for(const testCase of data) {
             await fetch(`${TESTRAIL_URL}/add_case/${sectionId}`, {
                 method: "POST",
                 headers: {
-                    "Authorization": "Basic " + btoa(await testRailCredentials()),
+                    "Authorization": "Basic " + btoa(testRailCredentials),
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(testCase)
