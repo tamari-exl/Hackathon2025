@@ -52,6 +52,10 @@ function loadTestRailDropdown() {
     (response) => {
       if (!response || !response.success) {
         dropdown.innerHTML = "<option>Error loading</option>";
+        const messageBox = document.getElementById("message");
+        messageBox.textContent = `❌ Error loading TestRail sections. Please check you are logged in and have the correct permissions.`;
+        messageBox.className = "error";
+        messageBox.style.color = "red";
         return;
       }
 
@@ -63,6 +67,7 @@ function loadTestRailDropdown() {
         option.textContent = `${testCase.name}`;
         dropdown.appendChild(option);
       });
+      document.getElementById("sendBtn").disabled = false;
     }
   );
 }
