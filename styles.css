@@ -1,6 +1,20 @@
+.ut-header {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.ut-wizz {
+  font-size: 24px;
+  font-weight: bold;
+  color: #0072ff;
+  padding-left: 40%;
+}
+
 .ut-card {
   width: 385px;
-  height: 300px;
+  height: 250px;
   padding: 20px;
   border-radius: 16px;
   background: #ffffff;
@@ -16,7 +30,6 @@
   font-weight: 600;
   color: #1f2937;
   margin: 0;
-  padding-top: 60px;
 }
 
 .ut-select {
@@ -40,14 +53,46 @@
   box-shadow: 0 8px 20px rgba(0,114,255,0.3);
 }
 
+#settingsModal {
+  font-family: Arial, sans-serif;
+}
+
 .modal-dialog {
-    max-width: 300px;
-    max-height: 300px;
+  max-width: 300px;
+  max-height: 250px;
 }
 
  /* for the close button in the modal header */
 .modal-header {
-    button:hover {
-        transform: translateY(-1px);
-    }
+  height: 40px;
+  button:hover {
+    transform: translateY(-1px);
+  }
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+.modal-dialog .modal-content {
+  font-size: 14px;
+  height: 310px;
+}
+
+.modal-item .form-control {
+  font-size: 14px;
+}
+
+.modal-item {
+  margin-bottom: 5px;
+}
+.my-modal-body {
+  padding-top:5px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.modal-btn {
+  padding-top:5px;
+  display: flex;
+  justify-content: flex-end;
 }

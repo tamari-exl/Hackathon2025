@@ -5,6 +5,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   const messageBox = document.getElementById("message");
+  messageBox.style.color = "black";
   messageBox.textContent = "⏳ Generating...";
 
   // Execute a script in the page to get its content
@@ -51,6 +52,10 @@ function loadTestRailDropdown() {
     (response) => {
       if (!response || !response.success) {
         dropdown.innerHTML = "<option>Error loading</option>";
+        const messageBox = document.getElementById("message");
+        messageBox.textContent = `❌ Error loading TestRail sections. Please check you are logged in and have the correct permissions.`;
+        messageBox.className = "error";
+        messageBox.style.color = "red";
         return;
       }
 
@@ -62,6 +67,7 @@ function loadTestRailDropdown() {
         option.textContent = `${testCase.name}`;
         dropdown.appendChild(option);
       });
+      document.getElementById("sendBtn").disabled = false;
     }
   );
 }
@@ -73,8 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('⚙️ Settings button clicked');
     const creds = await loadCredentials();
     console.log('🔑 Loaded credentials successfully');
-    document.getElementById('testrailUserName').value = creds.testrailUserName;
-    document.getElementById('testrailPassword').value = creds.testrailPassword;
     document.getElementById('llmToken').value = creds.llmToken;
     document.getElementById('llmApiUrl').value = creds.llmApiUrl;
     document.getElementById('testrailPath').value = creds.testrailPath;
@@ -84,8 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('btnSaveSettings').addEventListener('click', async () => {
     console.log('💾 Save settings clicked');
     const creds = {
-      testrailUserName: document.getElementById('testrailUserName').value,
-      testrailPassword: document.getElementById('testrailPassword').value,
       llmToken: document.getElementById('llmToken').value,
       llmApiUrl: document.getElementById('llmApiUrl').value,
       testrailPath: document.getElementById('testrailPath').value
